@@ -4,6 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        // Biarkan versi 7.3.0 jika ini yang Anda gunakan
         classpath 'com.android.tools.build:gradle:7.3.0' 
     }
 }
@@ -11,19 +12,19 @@ buildscript {
 allprojects {
     repositories {
         google()
-        mavenCenter
+        mavenCentral()
     }
 }
 
 apply plugin: 'com.android.application'
 
 android {
-    // <<< GANTI INI: package name Anda
+    // Pastikan Anda mengganti ini
     namespace 'com.simple.webviewapp' 
 
     compileSdkVersion 33
     defaultConfig {
-        // <<< GANTI INI: application ID Anda
+        // Pastikan Anda mengganti ini
         applicationId "com.simple.webviewapp" 
         minSdkVersion 24
         targetSdkVersion 33
@@ -45,7 +46,8 @@ android {
 }
 
 dependencies {
+    // Tingkatkan androidx.core untuk kompatibilitas yang lebih baik
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.core:core:1.9.0'
+    implementation 'androidx.core:core-ktx:1.9.0' // Sedikit penyesuaian dependensi
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4' 
 }
