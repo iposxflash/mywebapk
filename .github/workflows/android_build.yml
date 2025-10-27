@@ -1,7 +1,6 @@
 # Nama workflow yang muncul di GitHub Actions
-name: Android CI (Final WebView Build)
+name: Android CI (Final Build Fix)
 
-# Pemicu: Jalankan pada push ke branch utama
 on:
   push:
     branches: [ "main", "master" ]
@@ -13,11 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout Code: Gunakan v3 yang stabil.
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+    # 1. Checkout Code
+    - uses: actions/checkout@v3
 
-    # 2. Setup Java: Mengatur lingkungan Java
+    # 2. Setup Java
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
@@ -25,16 +23,12 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    # 3. Build APK Menggunakan Action Gradle Resmi (MENGGANTIKAN SEMUA CHMOD & ./gradlew)
-    # Ini secara otomatis menangani izin dan wrapper.
-    - name: Build Debug APK via Gradle Action
-      uses: gradle/actions/setup-gradle@v3 # Menggunakan Action Gradle Resmi
-      with:
-        arguments: assembleDebug # Perintah Gradle yang akan dijalankan
+    # 3. FIX: Menambahkan Izin Eksekusi SECARA PAKSA (Mengatasi masalah Git)
+    - name: Fix gradlew permissions
+      run: chmod +x gradlew
 
-    # 4. Upload Artifact
-    - name: Upload Debug APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-debug-apk
-        path: app/build/outputs/apk/debug/app-debug.apk
+    # 4. FIX: Perintah Clean dan Build Ulang (Mengatasi JAR hilang/korup)
+    - name: Clean and Build Debug APK
+      # 'clean' untuk membersihkan cache yang korup, 'assembleDebug' untuk build.
+      # '--no-daemon' untuk menghindari masalah cache proses.
+      run: ./gradlew clean assembleDebug --no-daemon
